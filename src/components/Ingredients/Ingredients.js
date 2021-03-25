@@ -10,13 +10,13 @@ const ingredientReducer = (currentIngredients, action) => {
     case 'SET':
       return action.ingredients;
     case 'ADD':
-      return [...currentIngredients, action.ingredients];
+      return [...currentIngredients, action.ingredient];
     case 'DELETE':
       return currentIngredients.filter(ing => ing.id !== action.id);
     default:
       throw new Error('Should not get there!');
   }
-}
+};
 
 const Ingredients = () => {
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
