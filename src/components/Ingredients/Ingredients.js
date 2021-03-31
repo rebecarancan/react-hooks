@@ -91,7 +91,7 @@ const Ingredients = () => {
     return (
       <IngredientList ingredients={userIngredients} onRemoveItem={removeIngredientHandler} />
     );
-  }, [useIngredients, removeIngredientHandler]);
+  }, [userIngredients, removeIngredientHandler]);
 
   return (
     <div className="App">
