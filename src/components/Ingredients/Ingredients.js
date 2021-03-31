@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useReducer, useCallback, useMemo } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -45,7 +45,7 @@ const Ingredients = () => {
     dispatch({type: 'SET', ingredients: filteredIngredients});
   }, []);
 
-  const addIngredientHandler = ingredient => {
+  const addIngredientHandler = useCallback(ingredient => {
     dispatchHttp({type: 'SEND'});
     fetch('https://react-hooks-fd661-default-rtdb.firebaseio.com/ingredients.json', {
       method: 'POST',
@@ -66,9 +66,9 @@ const Ingredients = () => {
         ingredient: { id: responseData.name, ...ingredient }
       });
     });
-  };
+  }, []);
 
-  const removeIngredientHandler = ingredientId => {
+  const removeIngredientHandler = useCallback(ingredientId => {
     dispatchHttp({type: 'SEND'});
     fetch(`https://react-hooks-fd661-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`, {
       method: 'DELETE'
@@ -81,11 +81,17 @@ const Ingredients = () => {
     }).catch(error => {
       dispatchHttp({type: 'ERROR', errorMessage: 'Something went wrong!'});
     });
-  };
+  }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     dispatchHttp({type: 'CLEAR'});
-  }
+  }, []);
+
+  const ingredientList = useMemo(() => {
+    return (
+      <IngredientList ingredients={userIngredients} onRemoveItem={removeIngredientHandler} />
+    );
+  }, [useIngredients, removeIngredientHandler]);
 
   return (
     <div className="App">
@@ -94,7 +100,7 @@ const Ingredients = () => {
 
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler} />
-        <IngredientList ingredients={userIngredients} onRemoveItem={removeIngredientHandler} />
+        {ingredientList}
       </section>
     </div>
   );
